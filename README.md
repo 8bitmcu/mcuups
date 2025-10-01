@@ -23,7 +23,7 @@ The core of this project is a DC Power Supply built with a dedicated UPS module 
 
 #### Part 2: Monitoring and Reporting
 
-An Arduino-compatible microcontroller monitors the UPS's operational status and reports the data back to a connected computer using the [HIDPowerDevice](https://github.com/abratchik/HIDPowerDevice) library. This monitoring system is designed to be compatible with the Network UPS Tools ([NUT](https://github.com/networkupstools/nut)) framework.
+An Arduino-compatible microcontroller monitors the UPS's operational status and reports the data back to a connected computer using the a custom SmartAPC library. This monitoring system is designed to be compatible with the Network UPS Tools ([NUT](https://github.com/networkupstools/nut)) framework.
 
 -----
 
