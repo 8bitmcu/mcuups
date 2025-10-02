@@ -9,9 +9,9 @@
 #define smartapc_h
 
 struct UPSState {
-    float batteryVoltage;
-    float batteryPercent;
-    bool onBattery;
+    float battery_voltage;
+    float battery_percent;
+    bool on_battery;
     int runtime;
 };
 
@@ -21,16 +21,19 @@ public:
 
     SmartAPC();
 
-    void readCommands(UPSState *state);
-    void sendCommands(UPSState *state);
+    void read_commands(UPSState *state);
+    void send_commands(UPSState *state);
+
+    double irms;
 
 private:
 
-    bool prevOnBattery;
+    bool prev_on_battery;
 
-    unsigned long int updateBattery;
+    unsigned long int update_battery;
 
-    bool lowBatteryWarn;
+    bool low_battery_warn;
+
 };
 
 #endif

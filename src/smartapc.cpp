@@ -5,12 +5,12 @@ SmartAPC::SmartAPC() {
     Serial.begin(2400);
     Serial.setTimeout(100);
 
-    updateBattery = 0;
-    prevOnBattery = false;
-    lowBatteryWarn = false;
+    update_battery = 0;
+    prev_on_battery = false;
+    low_battery_warn = false;
 }
 
-void SmartAPC::readCommands(UPSState *state) {
+void SmartAPC::read_commands(UPSState *state) {
     while (Serial.available()) {
         char cmd = Serial.read();
         switch(cmd) {
@@ -23,7 +23,7 @@ void SmartAPC::readCommands(UPSState *state) {
                 break;
 
             case 'f': // Battery percentage
-                Serial.print(state->batteryPercent, 1);
+                Serial.print(state->battery_percent, 1);
                 Serial.print("\n\r");
                 break;
 
@@ -37,7 +37,7 @@ void SmartAPC::readCommands(UPSState *state) {
                 break;
 
             case 'B': // Battery voltage
-                Serial.print(state->batteryVoltage, 2);
+                Serial.print(state->battery_voltage, 2);
                 Serial.print("\n\r");
                 break;
 
@@ -46,7 +46,12 @@ void SmartAPC::readCommands(UPSState *state) {
                 break;
 
             case 'Q': 
-                Serial.print(state->onBattery ? "10\n\r" : "08\n\r");
+                Serial.print(state->on_battery ? "10\n\r" : "08\n\r");
+                break;
+
+            case 'w':
+                Serial.print(irms, 3);
+                Serial.print("\n\r");
                 break;
 
             case '\r': // Carriage return (ignore)
@@ -61,26 +66,27 @@ void SmartAPC::readCommands(UPSState *state) {
     }
 }
 
-void SmartAPC::sendCommands(UPSState *state) {
-    if (state->onBattery) {
-        if (updateBattery == 0) {
-            updateBattery = millis();
+void SmartAPC::send_commands(UPSState *state) {
+    if (state->on_battery) {
+        if (update_battery == 0) {
+            update_battery = millis();
         }
-        if (millis() > updateBattery) {
+        if (millis() > update_battery) {
             Serial.print("!\n\r");
-            updateBattery += 30000;
+            update_battery += 30000;
         }
-        prevOnBattery = true;
-    } else if (prevOnBattery && !state->onBattery) {
+        prev_on_battery = true;
+    } else if (prev_on_battery && !state->on_battery) {
         Serial.print("$\n\r");
-        prevOnBattery = false;
+        prev_on_battery = false;
     }
 
-    if (state->batteryPercent < 10.0 && !lowBatteryWarn) {
+    if (state->battery_percent < 10.0 && !low_battery_warn) {
         Serial.print("%\n\r");
-        lowBatteryWarn = true;
-    } else if (state->batteryPercent > 40.0 && lowBatteryWarn) {
+        low_battery_warn = true;
+    } else if (state->battery_percent > 40.0 && low_battery_warn) {
         Serial.print("+\n\r");
-        lowBatteryWarn = false;
+        low_battery_warn = false;
     }
 }
+
